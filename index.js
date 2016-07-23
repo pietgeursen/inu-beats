@@ -1,6 +1,7 @@
 import { start, pull, html } from 'inu'
 import Pushable from 'pull-pushable'
 import Immutable from 'seamless-immutable'
+import classnames from 'classnames'
 
 const app = {
   init: function () {
@@ -16,15 +17,21 @@ const app = {
     //console.log(model, action);
     switch(action.type){
       case 'TICK':
-      const newModel = Immutable(model).set('index', (model.index + 1) % model.notes.length) 
+      var newModel = Immutable(model).set('index', (model.index + 1) % model.notes.length) 
       return {model: newModel.asMutable({deep: true})}
+      break;
+      case 'TIMER_CREATED':
+      var newModel = Immutable(model).set('timer', action.payload) 
+      return {model: newModel.asMutable({deep: true})}
+      break;
+      
     }
     return {model}
   },
   view: function (model, dispatch) {
     return html`<main>
       ${model.notes.map(function(note, index) {
-       return html`<div class=${model.index === index ? 'playing' : ''}>note</div>` 
+       return html`<div class=${classnames({playing: model.index === index, on: note})}>note</div>` 
       })}
     </main>`
   },
@@ -33,7 +40,8 @@ const app = {
     switch(effect.type){
       case 'SCHEDULE_TICK': 
         const p = Pushable()
-        setInterval(() => p.push({type: 'TICK'}), effect.payload)
+        const timer =  setInterval(() => p.push({type: 'TICK'}), effect.payload)
+        p.push({type: 'TIMER_CREATED', payload: timer}) 
         return p
     } 
   }
