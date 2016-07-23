@@ -16,15 +16,14 @@ const app = {
     //console.log(model, action);
     switch(action.type){
       case 'TICK':
-      const newModel = model.set('index', (model.index + 1) % model.notes.length) 
-      return {model: newModel}
+      const newModel = Immutable(model).set('index', (model.index + 1) % model.notes.length) 
+      return {model: newModel.asMutable({deep: true})}
     }
     return {model}
   },
   view: function (model, dispatch) {
-    const notes = model.notes.asMutable()
     return html`<main>
-      ${notes.map(function(note, index) {
+      ${model.notes.map(function(note, index) {
        return html`<div class=${model.index === index ? 'playing' : ''}>note</div>` 
       })}
     </main>`
