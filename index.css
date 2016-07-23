@@ -1,3 +1,18 @@
 main {
   text-align: center;
+  display: flex;
+  height: 10rem;
+}
+.note{
+  margin: auto;
+  width: 3rem;
+  height: 3rem;
+  border-style: solid;
+  border-color: white;
+}
+.note.on{
+  background-color: black;
+}
+.note.playing {
+  border-color: black;
 }
