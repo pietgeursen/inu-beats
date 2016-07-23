@@ -7,10 +7,10 @@ const app = {
   init: function () {
     return Immutable({
       model: {
-        notes: [true, false, false, false],
+        notes: [false, false, false, false],
         index: 0
       },
-      effect: {type: 'SCHEDULE_TICK', payload: 300}
+      effect: {type: 'SCHEDULE_TICK', payload: 1000}
     })
   },
   update: function (model, action) {
@@ -33,9 +33,14 @@ const app = {
   },
   view: function (model, dispatch) {
     return html`<main>
-      ${model.notes.map(function(note, index) {
-       return html`<div onclick=${()=> dispatch({type: 'TOGGLE_NOTE', payload: index})} class=${classnames({playing: model.index === index, on: note}, 'note')}></div>` 
-      })}
+      <div class='part'>
+        <audio id='partName' src='kick-oldschool.wav'>
+        </audio>
+        ${model.notes.map(function(note, index) {
+         if(note && index === model.index) document.querySelector('#partName').play() 
+         return html`<div onclick=${()=> dispatch({type: 'TOGGLE_NOTE', payload: index})} class=${classnames({playing: model.index === index, on: note}, 'note')}></div>` 
+        })}
+      </div>
     </main>`
   },
   run: function (effect, sources) {

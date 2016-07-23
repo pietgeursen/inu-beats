@@ -1,14 +1,14 @@
-main {
+.part {
   text-align: center;
   display: flex;
-  height: 10rem;
+  height: 5rem;
+  justify-content: space-around;
 }
 .note{
-  margin: auto;
-  width: 3rem;
-  height: 3rem;
+  width: 4rem;
+  height: 4rem;
   border-style: solid;
-  border-color: white;
+  border-color: red;
 }
 .note.on{
   background-color: black;
