@@ -2,6 +2,9 @@ import { start, pull, html } from 'inu'
 import Pushable from 'pull-pushable'
 import Immutable from 'seamless-immutable'
 import classnames from 'classnames'
+import play from 'audio-play'
+
+import Notes from './components/notes'
 
 const app = {
   init: function () {
@@ -15,35 +18,24 @@ const app = {
   },
   update: function (model, action) {
     //console.log(model, action);
+    var newModel = Immutable(model)
     switch(action.type){
       case 'TICK':
-      var newModel = Immutable(model).set('index', (model.index + 1) % model.notes.length) 
-      return {model: newModel.asMutable({deep: true})}
+      newModel = Immutable(model).set('index', (model.index + 1) % model.notes.length) 
       break;
       case 'TIMER_CREATED':
-      var newModel = Immutable(model).set('timer', action.payload) 
-      return {model: newModel.asMutable({deep: true})}
+      newModel = Immutable(model).set('timer', action.payload) 
       break;
       case 'TOGGLE_NOTE':
-      var newModel = Immutable(model).setIn(['notes', action.payload], !model.notes[action.payload] ) 
-      return {model: newModel.asMutable({deep: true})}
-
+      newModel = Immutable(model).setIn(['notes', action.payload], !model.notes[action.payload] ) 
+      break;
     }
-    return {model}
+    return {model: newModel.asMutable({deep: true})}
   },
   view: function (model, dispatch) {
     return html`<main>
       <div class='part'>
-        ${model.notes.map(function(note, index) {
-        return html`
-          <div 
-             onclick=${()=> dispatch({type: 'TOGGLE_NOTE', payload: index})} 
-             class=${classnames({playing: model.index === index, on: note}, 'note')}
-          >
-            <audio id='partName' ${(note && index === model.index) ? 'autoplay' : null} src='kick-oldschool.wav'>
-            </audio>
-          </div>` 
-        })}
+        ${Notes(model, dispatch)}
       </div>
     </main>`
   },
